@@ -41,7 +41,7 @@ def feeds(my_key,value1,value2,media_Id,no_of_stories,from_date_start,till_date_
 
 @app.route('/')
 def hello_world():
-    return redirect('/get_date')
+    return render_template('index.html')
 
 
 @app.route('/get_data',methods = ['GET','POST'])
