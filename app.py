@@ -10,7 +10,7 @@ import mediacloud.api, json, datetime
 
 # ID KEYWORDS AND KEY TO BE ADDED HERE
 
-my_key = 'c803be725711cdedd89941f2ff63a95c07457583f0ed355e50b58fc4d0ca3969'
+# my_key = 'ee9f47b5ff3e711f98904d23fda6e3ccfd6f97f039f484a4013646e4c5388e0d'
 value1 = 'phone'
 value2 = 'Colombia'
 media_Id = 'AND media_id:'+(str(1))
@@ -21,7 +21,9 @@ till_date_end =  datetime.date(2020,1,1)
 ###################
 
 
-def feeds(my_key,value1,value2,media_Id,no_of_stories,from_date_start,till_date_end):
+def feeds(value1,value2,media_Id,no_of_stories,from_date_start,till_date_end,
+          my_key='ee9f47b5ff3e711f98904d23fda6e3ccfd6f97f039f484a4013646e4c5388e0d'):
+
     mc = mediacloud.api.MediaCloud(my_key)
     fetch_size = 10
     stories = []
@@ -39,9 +41,9 @@ def feeds(my_key,value1,value2,media_Id,no_of_stories,from_date_start,till_date_
 
 
 
-@app.route('/')
+@app.route('/',methods = ['GET','POST'])
 def hello_world():
-    return render_template('index.html')
+    return redirect('/get_data')
 
 
 @app.route('/get_data',methods = ['GET','POST'])
@@ -52,11 +54,13 @@ def get_data():
     if request.method == 'POST':
         param = request.form
     try:
-        to_ = param.get('to')
-        from_ = param.get('from')
+        to_ = str(param.get('to'))
+        from_ = str(param.get('from'))
         key1 = param.get('key1')
         key2 = param.get('key2')
-        count = param.get('key2')
+        count = param.get('count')
+        code = None
+        code = param.get('code')
         response_type =param.get('response_type')
         send_url=False
         print(to_,from_)
@@ -76,7 +80,10 @@ def get_data():
             from_ = date(date.today().year, 1, 1)
         else:
             from_ = datetime.datetime.strptime(from_,'%Y-%m-%d')
-        stories = feeds(my_key,key1,key2,media_Id,count,from_,to_)
+        if code == None:
+            stories = feeds(key1,key2,media_Id,count,from_,to_)
+        else:
+            stories = feeds(key1, key2, media_Id, count, from_, to_,code)
         # return render_template('index.html',context=json.dump(stories))
         url_list = []
         for i in stories:
@@ -100,11 +107,15 @@ def get_data():
             pass
             # return render_template('index.html', context=url_list,key1=key1,key2=key2,
             #                        to_=str(to_)[0:10],from_=str(from_)[0:10])
+        print(url_list,url_list)
+        if len(url_list) == 0:
+            return 'No Result found for this search<br>Please change search parameters and try again <br>Thanks'
         if send_url:
             print(send_url)
             return redirect(send_url)
         return render_template('url_data.html', context=url_list)
-    except:
+    except Exception as e:
+        print(e)
         return render_template('index.html')
 
 
