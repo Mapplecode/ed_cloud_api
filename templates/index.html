@@ -10,14 +10,71 @@
 </head>
 <body>
     <div class="container mt-5">
-        <ul>
-            {% for data in context%}
-                <li><a href="{{data.url}}">{{data.url}}</a></li>
-            {% endfor %} 
-        </ul>
+<form method="get">
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="inputZip">Key One</label>
+      <input type="text" class="form-control" {% if key1 %} value="{{key1}}" {% endif %} id="inputZip" name="key1">
     </div>
+      <div class="form-group col-md-3">
+      <label for="inputZip">Key Two</label>
+      <input type="text" class="form-control" {% if key2 %} value="{{key2}}" {% endif %} name="key2">
+    </div>
+      <div class="form-group col-md-1">
+      </div>
+      <div class="form-group col-md-2">
+      <label for="inputZip">From Date</label>
+      <input type="date" name="from" class="form-control" {% if from_ %} value="{{from_}}" {% endif %}>
+    </div>
+      <div class="form-group col-md-2">
+      <label for="inputZip">To Date</label>
+      <input type="date" name="to" class="form-control" {% if to_ %} value="{{to_}}" {% endif %}>
+    </div>
+  </div>
+      <button type="submit" class="btn btn-success mt-3">Submit</button>
+    {% if context %}
+    <button type="button" id="saveToFile" class="btn btn-primary mt-3">Save</button>
+    {% endif %}
+  <div class="row">
+        <div class="col-2"></div>
+        {% if context %}
+        <textarea id='context_text' class="col-md-7" style="height:500px;">
+            {% for txt in context %}
+            {{txt}}
+            {% endfor %}
+        </textarea>
+        {% endif %}
+    </div>
+
+</form>
+<div class="row mt-5">
+    </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery.js"></script>
+    <script>
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+  $('#saveToFile').click(function(e) {
+    var data = document.getElementById("context_text").textContent;
+    download('data.txt',data)
+  });
+  $('#saveToFile').click(function(e) {
+    var data = document.getElementById("context_text").textContent;
+    download('data.txt',data)
+</script>
 </body>
 </html>
