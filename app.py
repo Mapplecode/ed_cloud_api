@@ -1,5 +1,5 @@
-from flask import Flask,render_template,request,Response,make_response
-
+from flask import Flask,render_template,request,Response,make_response,redirect
+import urllib
 import datetime
 from datetime import date
 
@@ -24,7 +24,7 @@ till_date_end =  datetime.date(2020,1,1)
 
 def feeds(my_key,value1,value2,media_Id,no_of_stories,from_date_start,till_date_end):
     mc = mediacloud.api.MediaCloud(my_key)
-    fetch_size = 500
+    fetch_size = 10
     stories = []
     last_processed_stories_id = 0
     while len(stories) < no_of_stories:
@@ -59,7 +59,7 @@ def get_data():
         key2 = param.get('key2')
         count = param.get('key2')
         response_type =param.get('response_type')
-
+        send_url=False
         print(to_,from_)
         if count == '' or count == None:
             try:
@@ -80,10 +80,13 @@ def get_data():
         stories = feeds(my_key,key1,key2,media_Id,count,from_,to_)
         # return render_template('index.html',context=json.dump(stories))
         url_list = []
-        print(stories[5])
         for i in stories:
             if 'Rss' in i['url'] or 'rss' in i['url'] or 'RSS' in i['url'] :
-
+                test_request = str(urllib.request.urlopen("https://www.stackoverflow.com").getcode())
+                print(test_request)
+                if test_request == '200' or '200' in test_request:
+                    send_url = i['url']
+                    print(i['url'])
                 title = (i['title'])
                 c_date = str(i['collect_date'])
                 p_date = str(i['publish_date'])
@@ -95,11 +98,16 @@ def get_data():
                          'media_url':media_url,'story_tags':story_tags}
                 url_list.append(dict1)
         else:
+            pass
             # return render_template('index.html', context=url_list,key1=key1,key2=key2,
             #                        to_=str(to_)[0:10],from_=str(from_)[0:10])
-            return render_template('url_data.html', context=url_list)
+        if send_url:
+            print(send_url)
+            return redirect(send_url)
+        return render_template('url_data.html', context=url_list)
     except:
         return render_template('index.html')
+
 
 
 
