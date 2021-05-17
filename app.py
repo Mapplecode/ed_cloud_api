@@ -1,5 +1,5 @@
 from flask import Flask,render_template,request,Response,make_response,redirect
-import urllib3.request
+import requests
 import datetime
 from datetime import date
 
@@ -81,7 +81,7 @@ def get_data():
     url_list = []
     for i in stories:
         if 'Rss' in i['url'] or 'rss' in i['url'] or 'RSS' in i['url'] :
-            test_request = str(urllib3.request.urlopen("https://www.stackoverflow.com").getcode())
+            test_request = str(requests.get(i['url']).status_code)
             print(test_request)
             if test_request == '200' or '200' in test_request:
                 send_url = i['url']
