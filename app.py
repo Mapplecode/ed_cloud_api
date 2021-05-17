@@ -1,10 +1,9 @@
 from flask import Flask,render_template,request,Response,make_response,redirect
-import urllib
+import urllib3
 import datetime
 from datetime import date
 
 app = Flask(__name__)
-
 
 
 import mediacloud.api, json, datetime
@@ -52,61 +51,61 @@ def get_data():
         param = request.args
     if request.method == 'POST':
         param = request.form
-    try:
-        to_ = param.get('to')
-        from_ = param.get('from')
-        key1 = param.get('key1')
-        key2 = param.get('key2')
-        count = param.get('key2')
-        response_type =param.get('response_type')
-        send_url=False
-        print(to_,from_)
-        if count == '' or count == None:
-            try:
-                count = int(count)
-            except:
-                count = no_of_stories
-        else:
+    # try:
+    to_ = param.get('to')
+    from_ = param.get('from')
+    key1 = param.get('key1')
+    key2 = param.get('key2')
+    count = param.get('key2')
+    response_type =param.get('response_type')
+    send_url=False
+    print(to_,from_)
+    if count == '' or count == None:
+        try:
+            count = int(count)
+        except:
             count = no_of_stories
-        if to_ == '' or to_ == None:
-            to_ = datetime.datetime.now().date()
-        else:
-            to_ = datetime.datetime.strptime(to_,'%Y-%m-%d')
+    else:
+        count = no_of_stories
+    if to_ == '' or to_ == None:
+        to_ = datetime.datetime.now().date()
+    else:
+        to_ = datetime.datetime.strptime(to_,'%Y-%m-%d')
 
-        if from_ == '' or from_ == None:
-            from_ = date(date.today().year, 1, 1)
-        else:
-            from_ = datetime.datetime.strptime(from_,'%Y-%m-%d')
-        stories = feeds(my_key,key1,key2,media_Id,count,from_,to_)
-        # return render_template('index.html',context=json.dump(stories))
-        url_list = []
-        for i in stories:
-            if 'Rss' in i['url'] or 'rss' in i['url'] or 'RSS' in i['url'] :
-                test_request = str(urllib.request.urlopen("https://www.stackoverflow.com").getcode())
-                print(test_request)
-                if test_request == '200' or '200' in test_request:
-                    send_url = i['url']
-                    print(i['url'])
-                title = (i['title'])
-                c_date = str(i['collect_date'])
-                p_date = str(i['publish_date'])
-                media_name = str(i['media_name'])
-                media_url = str(i['media_url'])
-                story_tags = str(i['story_tags'])
-                url = i['url']
-                dict1 = {'title':title,'p_date':p_date,'url':url,'c_date':c_date,'media_name':media_name,
-                         'media_url':media_url,'story_tags':story_tags}
-                url_list.append(dict1)
-        else:
-            pass
-            # return render_template('index.html', context=url_list,key1=key1,key2=key2,
-            #                        to_=str(to_)[0:10],from_=str(from_)[0:10])
-        if send_url:
-            print(send_url)
-            return redirect(send_url)
-        return render_template('url_data.html', context=url_list)
-    except:
-        return render_template('index.html')
+    if from_ == '' or from_ == None:
+        from_ = date(date.today().year, 1, 1)
+    else:
+        from_ = datetime.datetime.strptime(from_,'%Y-%m-%d')
+    stories = feeds(my_key,key1,key2,media_Id,count,from_,to_)
+    # return render_template('index.html',context=json.dump(stories))
+    url_list = []
+    for i in stories:
+        if 'Rss' in i['url'] or 'rss' in i['url'] or 'RSS' in i['url'] :
+            test_request = str(urllib3.request.urlopen("https://www.stackoverflow.com").getcode())
+            print(test_request)
+            if test_request == '200' or '200' in test_request:
+                send_url = i['url']
+                print(i['url'])
+            title = (i['title'])
+            c_date = str(i['collect_date'])
+            p_date = str(i['publish_date'])
+            media_name = str(i['media_name'])
+            media_url = str(i['media_url'])
+            story_tags = str(i['story_tags'])
+            url = i['url']
+            dict1 = {'title':title,'p_date':p_date,'url':url,'c_date':c_date,'media_name':media_name,
+                     'media_url':media_url,'story_tags':story_tags}
+            url_list.append(dict1)
+    else:
+        pass
+        # return render_template('index.html', context=url_list,key1=key1,key2=key2,
+        #                        to_=str(to_)[0:10],from_=str(from_)[0:10])
+    if send_url:
+        print(send_url)
+        return redirect(send_url)
+    return render_template('url_data.html', context=url_list)
+    # except:
+    #     return render_template('index.html')
 
 
 
