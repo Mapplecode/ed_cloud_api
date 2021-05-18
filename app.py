@@ -14,7 +14,7 @@ import mediacloud.api, json, datetime
 value1 = 'phone'
 value2 = 'Colombia'
 media_Id = 'AND media_id:'+(str(1))
-no_of_stories = 1
+no_of_stories = 100
 
 from_date_start =  datetime.date(2019,1,1)
 till_date_end =  datetime.date(2020,1,1)
@@ -25,7 +25,7 @@ def feeds(value1,value2,media_Id,no_of_stories,from_date_start,till_date_end,
           my_key='ee9f47b5ff3e711f98904d23fda6e3ccfd6f97f039f484a4013646e4c5388e0d'):
 
     mc = mediacloud.api.MediaCloud(my_key)
-    fetch_size = 10
+    fetch_size = 110
     stories = []
     last_processed_stories_id = 0
     while len(stories) < no_of_stories:
@@ -88,11 +88,9 @@ def get_data():
         url_list = []
         for i in stories:
             if 'Rss' in i['url'] or 'rss' in i['url'] or 'RSS' in i['url'] :
-                test_request = str(requests.get(i['url']).status_code)
-                print(test_request)
-                if test_request == '200' or '200' in test_request:
-                    send_url = i['url']
-                    print(i['url'])
+                # if test_request == '200' or '200' in test_request:
+                #     send_url = i['url']
+                #     print(i['url'])
                 title = (i['title'])
                 c_date = str(i['collect_date'])
                 p_date = str(i['publish_date'])
@@ -110,10 +108,8 @@ def get_data():
         print(url_list,url_list)
         if len(url_list) == 0:
             return 'No Result found for this search<br>Please change search parameters and try again <br>Thanks'
-        if send_url:
-            print(send_url)
-            return redirect(send_url)
-        return render_template('url_data.html', context=url_list)
+
+        return redirect(url_list[0]['url'])
     except Exception as e:
         print(e)
         return render_template('index.html')
