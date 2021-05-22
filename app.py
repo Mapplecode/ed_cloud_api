@@ -109,7 +109,7 @@ def get_data():
         if len(url_list) == 0:
             return 'No Result found for this search<br>Please change search parameters and try again <br>Thanks'
 
-        return redirect(url_list[0]['url'])
+        return str(url_list[0]['url'])
     except Exception as e:
         print(e)
         return render_template('index.html')
