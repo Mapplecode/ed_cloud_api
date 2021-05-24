@@ -102,7 +102,7 @@ def get_data():
                 dict1 = {'title':title,'p_date':p_date,'url':url,'c_date':c_date,'media_name':media_name,
                          'media_url':media_url,'story_tags':story_tags}
                 url_list.append(dict1)
-                list_of_urls.append(url)
+                list_of_urls.append(url+'\n')
 
         else:
             pass
@@ -112,7 +112,7 @@ def get_data():
         if len(url_list) == 0:
             return 'No Result found for this search<br>Please change search parameters and try again <br>Thanks'
 
-        return '\n'.join(list_of_urls+' \n')
+        return '\n'.join(list_of_urls)
     except Exception as e:
         print(e)
         return render_template('index.html')
