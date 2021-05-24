@@ -103,7 +103,7 @@ def get_data():
                          'media_url':media_url,'story_tags':story_tags}
                 url_list.append(dict1)
                 list_of_urls.append('<a href="{}">{}</a>'.format(i['url'],i['url']))
-
+                list_of_urls.append(str(i['url']+' \n'))
         else:
             pass
             # return render_template('index.html', context=url_list,key1=key1,key2=key2,
