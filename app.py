@@ -102,7 +102,7 @@ def get_data():
                 dict1 = {'title':title,'p_date':p_date,'url':url,'c_date':c_date,'media_name':media_name,
                          'media_url':media_url,'story_tags':story_tags}
                 url_list.append(dict1)
-                list_of_urls.append(url+'\n')
+                list_of_urls.append('<a href="{}">{}</a>'.format(i['url'],i['url']))
 
         else:
             pass
