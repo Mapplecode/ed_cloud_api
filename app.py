@@ -102,13 +102,12 @@ def get_data():
                 dict1 = {'title':title,'p_date':p_date,'url':url,'c_date':c_date,'media_name':media_name,
                          'media_url':media_url,'story_tags':story_tags}
                 url_list.append(dict1)
-                list_of_urls.append('<a href="{}">{}</a>'.format(i['url'],i['url']))
+                # list_of_urls.append('<a href="{}">{}</a>'.format(i['url'],i['url']))
                 list_of_urls.append(str(i['url']+' \n'))
         else:
             pass
             # return render_template('index.html', context=url_list,key1=key1,key2=key2,
             #                        to_=str(to_)[0:10],from_=str(from_)[0:10])
-        print(url_list,url_list)
         if len(url_list) == 0:
             return 'No Result found for this search<br>Please change search parameters and try again <br>Thanks'
 
