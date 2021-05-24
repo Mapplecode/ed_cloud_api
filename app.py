@@ -49,6 +49,7 @@ def hello_world():
 @app.route('/get_data',methods = ['GET','POST'])
 def get_data():
     param = ''
+    list_of_urls = list()
     if request.method == 'GET':
         param = request.args
     if request.method == 'POST':
@@ -101,6 +102,8 @@ def get_data():
                 dict1 = {'title':title,'p_date':p_date,'url':url,'c_date':c_date,'media_name':media_name,
                          'media_url':media_url,'story_tags':story_tags}
                 url_list.append(dict1)
+                list_of_urls.append(url)
+
         else:
             pass
             # return render_template('index.html', context=url_list,key1=key1,key2=key2,
@@ -109,7 +112,7 @@ def get_data():
         if len(url_list) == 0:
             return 'No Result found for this search<br>Please change search parameters and try again <br>Thanks'
 
-        return str(url_list[0]['url'])
+        return '\n'.join(list_of_urls)
     except Exception as e:
         print(e)
         return render_template('index.html')
