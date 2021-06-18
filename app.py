@@ -2,6 +2,7 @@ from flask import Flask,render_template,request,Response,make_response,redirect
 import requests
 import datetime
 from datetime import date
+import feedparser
 
 app = Flask(__name__)
 
@@ -87,27 +88,60 @@ def get_data():
             stories = feeds(key1, key2, media_Id, count, from_, to_,code)
         # return render_template('index.html',context=json.dump(stories))
         url_list = []
+        url_to_send = ''
         for i in stories:
-            if 'Rss' in i['url'] or 'rss' in i['url'] or 'RSS' in i['url'] :
-                # if test_request == '200' or '200' in test_request:
-                #     send_url = i['url']
-                #     print(i['url'])
-                title = (i['title'])
-                c_date = str(i['collect_date'])
-                p_date = str(i['publish_date'])
-                media_name = str(i['media_name'])
-                media_url = str(i['media_url'])
-                story_tags = str(i['story_tags'])
-                url = i['url']
-                dict1 = {'title':title,'p_date':p_date,'url':url,'c_date':c_date,'media_name':media_name,
-                         'media_url':media_url,'story_tags':story_tags}
-                url_list.append(dict1)
-                # list_of_urls.append('<a href="{}">{}</a>'.format(i['url'],i['url']))
-                list_of_urls.append(str(i['url']+' \n'))
+            RSS = False
+            FEED = False
+            # print(i['url'])
+            new_feed_url = str(i['url'])
+            if new_feed_url[-1] == '/':
+                new_feed_url = new_feed_url[0:-1]
+            new_feed_url1 = new_feed_url+'/rss'
+            new_feed_url2 = new_feed_url + '/feed'
+
+            try:
+                import requests as req
+
+                feed_resp1 = req.get(new_feed_url1)
+                feed_resp2 = req.get(new_feed_url2)
+                print(feed_resp1.headers['Content-Type'],feed_resp2.headers['Content-Type'])
+                if 'text/xml' in str(feed_resp1.headers['Content-Type']):
+                    RSS = True
+                if 'text/xml' in str(feed_resp2.headers['Content-Type']):
+                    FEED = True
+                if RSS==True or FEED == True:
+                    print('found')
+                    if RSS == True:
+                        url_to_send =  new_feed_url1
+                    if FEED == True:
+                        url_to_send =  new_feed_url2
+                    break
+                    # title = (i['title'])
+                    # c_date = str(i['collect_date'])
+                    # p_date = str(i['publish_date'])
+                    # media_name = str(i['media_name'])
+                    # media_url = str(i['media_url'])
+                    # story_tags = str(i['story_tags'])
+                    # url = i['url']
+                    # dict1 = {'title':title,'p_date':p_date,'url':url,'c_date':c_date,'media_name':media_name,
+                    #          'media_url':media_url,'story_tags':story_tags}
+                    # url_list.append(dict1)
+                    # # list_of_urls.append('<a href="{}">{}</a>'.format(i['url'],i['url']))
+                    # list_of_urls.append(str(i['url']+' \n'))
+
+                    # count = count+1
+                    # if count == 5:
+                    #     break
+
+            except:
+                pass
+
         else:
             pass
             # return render_template('index.html', context=url_list,key1=key1,key2=key2,
             #                        to_=str(to_)[0:10],from_=str(from_)[0:10])
+        if url_to_send != '':
+            return '<a href='+str(url_to_send)+'>'+str(url_to_send)+'</href>'
         if len(url_list) == 0:
             return 'No Result found for this search<br>Please change search parameters and try again <br>Thanks'
 
@@ -178,3 +212,14 @@ def get_file():
         #                            to_=str(to_)[0:10],from_=str(from_)[0:10])
     # except:
     #     return render_template('index.html')
+
+
+def feed_checker(url):
+    feed = feedparser.parse(url)
+    # store the etag and modified
+    last_etag = feed.etag
+    last_modified = feed.modified
+
+    # check if new version exists
+    feed_update = feedparser.parse(url, etag=last_etag, modified=last_modified)
+    return feed_update['status']
