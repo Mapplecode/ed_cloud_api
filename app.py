@@ -2,7 +2,7 @@ from flask import Flask,render_template,request,Response,make_response,redirect
 import requests
 import datetime
 from datetime import date
-import feedparser
+
 
 app = Flask(__name__)
 
@@ -213,13 +213,3 @@ def get_file():
     # except:
     #     return render_template('index.html')
 
-
-def feed_checker(url):
-    feed = feedparser.parse(url)
-    # store the etag and modified
-    last_etag = feed.etag
-    last_modified = feed.modified
-
-    # check if new version exists
-    feed_update = feedparser.parse(url, etag=last_etag, modified=last_modified)
-    return feed_update['status']
