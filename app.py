@@ -25,7 +25,7 @@ till_date_end =  datetime.date(2020,1,1)
 def feeds(value1,value2,media_Id,no_of_stories,from_date_start,till_date_end,
           my_key='ee9f47b5ff3e711f98904d23fda6e3ccfd6f97f039f484a4013646e4c5388e0d'):
 
-    mc = mediacloud.api.MediaCloud(my_key)
+    mc = mediacloud.api.MediaCloud('ee9f47b5ff3e711f98904d23fda6e3ccfd6f97f039f484a4013646e4c5388e0d')
     fetch_size = 110
     stories = []
     last_processed_stories_id = 0
@@ -82,73 +82,30 @@ def get_data():
             from_ = date(date.today().year, 1, 1)
         else:
             from_ = datetime.datetime.strptime(from_,'%Y-%m-%d')
-        if code == None:
-            stories = feeds(key1,key2,media_Id,count,from_,to_)
-        else:
-            stories = feeds(key1, key2, media_Id, count, from_, to_,code)
-        # return render_template('index.html',context=json.dump(stories))
-        url_list = []
-        url_to_send = ''
+        stories = feeds(key1, key2, media_Id, 50, from_, to_,code)
+        file1 = open(str(value1) + '_' + str(value2) + '_feeds.txt', 'w')
+        data_count = 1
+        data_list = []
         for i in stories:
-            RSS = False
-            FEED = False
-            # print(i['url'])
-            new_feed_url = str(i['url'])
-            if new_feed_url[-1] == '/':
-                new_feed_url = new_feed_url[0:-1]
-            new_feed_url1 = new_feed_url+'/rss'
-            new_feed_url2 = new_feed_url + '/feed'
-
-            try:
-                import requests as req
-
-                feed_resp1 = req.get(new_feed_url1)
-                feed_resp2 = req.get(new_feed_url2)
-                print(feed_resp1.headers['Content-Type'],feed_resp2.headers['Content-Type'])
-                if 'text/xml' in str(feed_resp1.headers['Content-Type']):
-                    RSS = True
-                if 'text/xml' in str(feed_resp2.headers['Content-Type']):
-                    FEED = True
-                if RSS==True or FEED == True:
-                    print('found')
-                    if RSS == True:
-                        url_to_send =  new_feed_url1
-                    if FEED == True:
-                        url_to_send =  new_feed_url2
-                    break
-                    # title = (i['title'])
-                    # c_date = str(i['collect_date'])
-                    # p_date = str(i['publish_date'])
-                    # media_name = str(i['media_name'])
-                    # media_url = str(i['media_url'])
-                    # story_tags = str(i['story_tags'])
-                    # url = i['url']
-                    # dict1 = {'title':title,'p_date':p_date,'url':url,'c_date':c_date,'media_name':media_name,
-                    #          'media_url':media_url,'story_tags':story_tags}
-                    # url_list.append(dict1)
-                    # # list_of_urls.append('<a href="{}">{}</a>'.format(i['url'],i['url']))
-                    # list_of_urls.append(str(i['url']+' \n'))
-
-                    # count = count+1
-                    # if count == 5:
-                    #     break
-
-            except:
-                pass
-
-        else:
-            pass
-            # return render_template('index.html', context=url_list,key1=key1,key2=key2,
-            #                        to_=str(to_)[0:10],from_=str(from_)[0:10])
-        if url_to_send != '':
-            return '<a href='+str(url_to_send)+'>'+str(url_to_send)+'</href>'
-        if len(url_list) == 0:
-            return 'No Result found for this search<br>Please change search parameters and try again <br>Thanks'
-
-        return '\n'.join(list(set(list_of_urls)))
+            # print(str(data_count) + '. ' + i['url'])
+            # data_str = data_str + str(count) + '. ' + i['url']+'<br>'+'________________'+'<br>'
+            data_list.append(i['url'])
+        #     try:
+        #         file1.write(str(count) + '. ' + i['url'])
+        #         file1.write(' \n ')
+        #         # print(str(key) + " is  --- -- " + str(value))
+        #         count = count + 1
+        #     except:
+        #         pass
+        #
+        #     file1.write("____________________")
+        #     file1.write('\n  ')
+        #     file1.write('\n  ')
+        # file1.close()
     except Exception as e:
         print(e)
         return render_template('index.html')
+    return render_template('index2.html',data = data_list,key1=key1,key2=key2)
 
 
 
