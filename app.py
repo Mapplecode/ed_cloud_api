@@ -24,8 +24,9 @@ till_date_end =  datetime.date(2020,1,1)
 
 def feeds(value1,value2,media_Id,no_of_stories,from_date_start,till_date_end,
           my_key='ee9f47b5ff3e711f98904d23fda6e3ccfd6f97f039f484a4013646e4c5388e0d'):
-
-    mc = mediacloud.api.MediaCloud('ee9f47b5ff3e711f98904d23fda6e3ccfd6f97f039f484a4013646e4c5388e0d')
+    if my_key == None or my_key == '':
+        my_key= 'ee9f47b5ff3e711f98904d23fda6e3ccfd6f97f039f484a4013646e4c5388e0d'
+    mc = mediacloud.api.MediaCloud(my_key)
     fetch_size = 110
     stories = []
     last_processed_stories_id = 0
@@ -66,6 +67,7 @@ def get_data():
         response_type =param.get('response_type')
         send_url=False
         print(to_,from_)
+        print('FROM - ',from_,'TILL - ',to_)
         if count == '' or count == None:
             try:
                 count = int(count)
@@ -82,7 +84,8 @@ def get_data():
             from_ = date(date.today().year, 1, 1)
         else:
             from_ = datetime.datetime.strptime(from_,'%Y-%m-%d')
-        stories = feeds(key1, key2, media_Id, 50, from_, to_,code)
+        stories = feeds(value1=key1, value2=key2, media_Id=media_Id, no_of_stories=50, from_date_start=from_,
+                        till_date_end=to_,my_key=code)
         file1 = open(str(value1) + '_' + str(value2) + '_feeds.txt', 'w')
         data_count = 1
         data_list = []

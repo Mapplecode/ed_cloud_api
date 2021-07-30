@@ -3,7 +3,7 @@ import mediacloud.api, json, datetime
 # ID KEYWORDS AND KEY TO BE ADDED HERE
 
 my_key = 'c803be725711cdedd89941f2ff63a95c07457583f0ed355e50b58fc4d0ca3969'
-value1 = 'phone'
+value1 = 'iphone'
 value2 = 'Colombia'
 media_Id = 'AND media_id:'+(str(1))
 no_of_stories = 1
@@ -31,3 +31,23 @@ def feeds(my_key,value1,value2,media_Id,no_of_stories,from_date_start,till_date_
 
 
 stories = feeds(my_key,value1,value2,media_Id,no_of_stories,from_date_start,till_date_end)
+
+
+
+file1 = open(str(value1)+'_'+str(value2)+'_feeds.txt','w')
+count = 1
+for i in stories:
+
+    print(str(count)+ '. '+ i['url'])
+    try:
+        file1.write( str(count)+ '. '+ i['url'])
+        file1.write(' \n ')
+        # print(str(key) + " is  --- -- " + str(value))
+        count = count + 1
+    except:
+        pass
+
+    file1.write("____________________")
+    file1.write('\n  ')
+    file1.write('\n  ')
+file1.close()
