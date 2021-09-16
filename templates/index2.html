@@ -19,28 +19,28 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="http://code.jquery.com/jquery.js"></script>
 <script>
-    function download(filename, text) {
-  var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  element.setAttribute('download', filename);
+<!--    function download(filename, text) {-->
+<!--  var element = document.createElement('a');-->
+<!--  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));-->
+<!--  element.setAttribute('download', filename);-->
 
-  element.style.display = 'none';
-  document.body.appendChild(element);
+<!--  element.style.display = 'none';-->
+<!--  document.body.appendChild(element);-->
 
-  element.click();
+<!--  element.click();-->
 
-  document.body.removeChild(element);
-}
-  $('#saveToFile').click(function(e) {
-    var data = document.getElementById("context_text").textContent;
-    download('data.txt',data)
-  });
+<!--  document.body.removeChild(element);-->
+<!--}-->
+<!--  $('#saveToFile').click(function(e) {-->
+<!--    var data = document.getElementById("context_text").textContent;-->
+<!--    download('data.txt',data)-->
+<!--  });-->
 
-var data = document.getElementById("url_data").textContent;
-var key1 = '{{key1}}'
-var key2 = '{{key2}}'
+<!--var data = document.getElementById("url_data").textContent;-->
+<!--var key1 = '{{key1}}'-->
+<!--var key2 = '{{key2}}'-->
 
-download(key1+'_'+key2+'.txt',data)
+<!--download(key1+'_'+key2+'.txt',data)-->
 
 
 </script>
