@@ -1,8 +1,8 @@
 from flask import Flask,render_template,request,Response,make_response,redirect
 import requests
 import datetime
-from datetime import date
-
+from datetime import date,timedelta
+from datetime import timedelta
 
 app = Flask(__name__)
 
@@ -51,6 +51,8 @@ def hello_world():
 @app.route('/get_data',methods = ['GET','POST'])
 def get_data():
     param = ''
+    to_=str(datetime.date.today())
+    from_=str(datetime.date.today())
     list_of_urls = list()
     if request.method == 'GET':
         param = request.args
@@ -66,8 +68,6 @@ def get_data():
         code = param.get('code')
         response_type =param.get('response_type')
         send_url=False
-        print(to_,from_)
-        print('FROM - ',from_,'TILL - ',to_)
         if count == '' or count == None:
             try:
                 count = int(count)
@@ -75,101 +75,35 @@ def get_data():
                 count = no_of_stories
         else:
             count = no_of_stories
-        if to_ == '' or to_ == None:
-            to_ = datetime.datetime.now().date()
+        if to_ == '' or to_ == None or to_ == 'None':
+            to_ = (datetime.datetime.now().date())
         else:
-            to_ = datetime.datetime.strptime(to_,'%Y-%m-%d')
+            to_ = (datetime.datetime.strptime(to_,'%Y-%m-%d'))
 
-        if from_ == '' or from_ == None:
-            from_ = date(date.today().year, 1, 1)
+        if from_ == '' or from_ == None or from_ == 'None':
+            from datetime import timedelta
+            from_ = datetime.date.today() - timedelta(365)
         else:
             from_ = datetime.datetime.strptime(from_,'%Y-%m-%d')
+        if key1 == None:
+            key1 = ''
+        if key2 == None:
+            key2 = ''
+        if code == None:
+            code = ''
+
         stories = feeds(value1=key1, value2=key2, media_Id=media_Id, no_of_stories=50, from_date_start=from_,
-                        till_date_end=to_,my_key=code)
-        file1 = open(str(value1) + '_' + str(value2) + '_feeds.txt', 'w')
-        data_count = 1
+                    till_date_end=to_,my_key=code)
+
         data_list = []
         for i in stories:
-            # print(str(data_count) + '. ' + i['url'])
-            # data_str = data_str + str(count) + '. ' + i['url']+'<br>'+'________________'+'<br>'
             data_list.append(i['url'])
-        #     try:
-        #         file1.write(str(count) + '. ' + i['url'])
-        #         file1.write(' \n ')
-        #         # print(str(key) + " is  --- -- " + str(value))
-        #         count = count + 1
-        #     except:
-        #         pass
-        #
-        #     file1.write("____________________")
-        #     file1.write('\n  ')
-        #     file1.write('\n  ')
-        # file1.close()
+        from datetime import timedelta
+        day_1 = datetime.date.today() - timedelta(365)
+        today = datetime.datetime.now().date()
+        print(str(day_1),str(today))
     except Exception as e:
+        print('LAST EXCEPTION')
         print(e)
-        return render_template('index.html')
-    return render_template('index2.html',data = data_list,key1=key1,key2=key2)
-
-
-
-
-@app.route('/get_xml',methods = ['GET','POST'])
-def get_file():
-    param = ''
-    if request.method == 'GET':
-        param = request.args
-    if request.method == 'POST':
-        param = request.form
-    # try:
-    to_ = param.get('to')
-    from_ = param.get('from')
-    key1 = param.get('key1')
-    key2 = param.get('key2')
-    count = param.get('key2')
-    response_type =param.get('res')
-    print(to_,from_)
-    if count == '' or count == None:
-        try:
-            count = int(count)
-        except:
-            count = no_of_stories
-    else:
-        count = no_of_stories
-    if to_ == '' or to_ == None:
-        to_ = datetime.datetime.now().date()
-    else:
-        to_ = datetime.datetime.strptime(to_,'%Y-%m-%d')
-
-    if from_ == '' or from_ == None:
-        from_ = date(date.today().year, 1, 1)
-    else:
-        from_ = datetime.datetime.strptime(from_,'%Y-%m-%d')
-    stories = feeds(my_key,key1,key2,media_Id,count,from_,to_)
-    # return render_template('index.html',context=json.dump(stories))
-    url_list = []
-    for i in stories:
-        print(i['url'])
-        if 'Rss' in i['url'] or 'rss' in i['url'] or 'RSS' in i['url'] :
-            url_list.append(i['url'])
-    url_file= open('url_file.txt','w')
-    for urls in url_list:
-        url_file.write(str(urls)+'\n')
-    url_file.close()
-    bar = ''
-    bar += '<html><body><myurls xmlns:xlink="http://www.w3.org/1999/xlink">'
-    for urls in url_list:
-        bar+='<url>'
-        bar += '<inurl xlink:type="simple" xlink:href="'+str(urls)+'">'+str(urls)+'</inurl>'
-        bar+='</url>'
-    bar += '</myurls></body></html>'
-    bar = bar.replace('&','&amp;')
-    xml_response = make_response(bar)
-    xml_response.headers['Content-Type'] = 'text/xml; charset=utf-8'
-    # if response_type == 'rss':
-    return xml_response
-        # else:
-        #     return render_template('index.html', context=url_list,key1=key1,key2=key2,
-        #                            to_=str(to_)[0:10],from_=str(from_)[0:10])
-    # except:
-    #     return render_template('index.html')
-
+        return render_template('index.html',to_=to_,from_=from_)
+    return render_template('index2.html',data = data_list,key1=key1,key2=key2,to_=to_,from_=from_)
